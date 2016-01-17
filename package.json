@@ -1,0 +1,17 @@
+{
+  "name": "voxels",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "long": "^3.0.1",
+    "node-int64": "^0.4.0",
+    "prismarine-nbt": "^0.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://jama1100@bitbucket.org/osmbuildings/voxels.git"
+  }
+}
