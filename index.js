@@ -10,17 +10,6 @@ var rasterize = require('./lib/Rasterizer.js');
 
 var WORLD_NAME = 'TestBerlin01';
 
-var ORIGIN_X = 0;
-var ORIGIN_Y = 0;
-
-var SIZE_X = 0;
-var SIZE_Y = 0;
-
-// var options = {
-//   FLATLAND: 0,
-//   FLOOD: 0
-// };
-
 //*****************************************************************************
 
 try {
@@ -45,6 +34,6 @@ nbt.tag.value.Data.value.LastPlayed.value = long.fromNumber(Date.now());
 nbt.toGzipFile('saves/' + WORLD_NAME + '/level.dat');
 
 var world = new World('saves/' + WORLD_NAME);
-var geojson = JSON.parse(fs.readFileSync('tile.json'));
+var geojson = JSON.parse(fs.readFileSync('data/tile.json'));
 
 rasterize(world, geojson);
