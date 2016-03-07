@@ -1,10 +1,11 @@
 {
-  "name": "voxels",
+  "name": "geocraft.js",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "long": "^3.0.1"
+    "long": "^3.0.1",
+    "mca.js": "git://github.com/VanCoding/mca.js.git"
   },
   "devDependencies": {},
   "scripts": {},

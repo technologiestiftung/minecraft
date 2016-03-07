@@ -1,13 +1,26 @@
 
-var fs = require('fs');
-
-var NBT = require('./lib/NBT.js');
+var zlib = require('zlib');
+var fs = require('fs-extra');
+var Long = require('long');
+var NBT = require('nbt');
 var World = require('./lib/World.js');
-var rasterize = require('./lib/Rasterizer.js');
+var Projection = require('./lib/Projection.js');
+var Transform = require('./lib/Transform.js');
 
 //*****************************************************************************
 
-var WORLD_NAME = 'TestBerlin01';
+var worldName = 'NANANA';
+var bbox = { n:52.52097, e:13.40787, s:52.52017, w:13.40654 };
+
+var p1 = Transform.toXY(bbox.e, bbox.n, 'EPSG4326');
+var p2 = Transform.toXY(bbox.w, bbox.s, 'EPSG4326');
+
+var x = Math.min(p1.x, p2.x);
+var y = Math.min(p1.y, p2.y);
+
+var options = {};
+options.sizeX = Math.abs(p2.x-p1.x) <<0;
+options.sizeY = Math.abs(p2.y-p1.y) <<0;
 
 //*****************************************************************************
 
@@ -16,25 +29,41 @@ try {
 } catch(e) {}
 
 try {
-  fs.mkdirSync('saves/' + WORLD_NAME);
+  fs.mkdirSync('saves/' + worldName);
 } catch(e) {}
 
 try {
-  fs.mkdirSync('saves/' + WORLD_NAME + '/region');
+  fs.mkdirSync('saves/' + worldName + '/region');
 } catch(e) {}
+
+fs.copySync('BedRock', 'saves/' + worldName);
 
 //*****************************************************************************
 
-console.log('Setting World options');
+var data = zlib.gunzipSync(fs.readFileSync('saves/' + worldName + '/level.dat'));
 
-var level = NBT.fromGzipFile('sample/level.dat');
-level.value.Data.value.LevelName.value = WORLD_NAME;
-level.value.Data.value.LastPlayed.value = Date.now();
-NBT.toGzipFile('saves/' + WORLD_NAME + '/level.dat', level);
+var nbt = NBT.parse(data, function(err, nbt) {
+  nbt.value.Data.value.LevelName.value = worldName;
 
-var world = new World('saves/' + WORLD_NAME);
-var geojson = JSON.parse(fs.readFileSync('data/tile.json'));
+  var l = Long.fromNumber(Date.now(), true);
+  var hi = l.getHighBits();
+  var lo = l.getLowBits();
+  nbt.value.Data.value.LastPlayed.value = [hi, lo];
 
-rasterize(world, geojson);
+  var buffer = NBT.writeUncompressed(nbt);
 
-console.log('done');
+  fs.writeFileSync('saves/' + worldName + '/level.dat', zlib.gzipSync(buffer));
+
+  var world = new World('saves/' + worldName);
+  // TODO: world's level is read async!
+
+  var p = new Projection(world, x, y);
+
+  //options.GEOMETRY = new Geometry({
+  //  dir: 'var/geometry',
+  //  url: 'http://data.osmbuildings.org/0.2/geocraft2016-02/area.json',
+  //  bbox: bbox
+  //});
+
+  p.process(options);
+});
