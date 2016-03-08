@@ -4,8 +4,8 @@ var fs = require('fs-extra');
 var Long = require('long');
 var NBT = require('nbt');
 var World = require('./lib/World.js');
-var Projection = require('./lib/Projection.js');
 var Transform = require('./lib/Transform.js');
+var Rasterizer = require('./lib/Rasterizer.js');
 
 //*****************************************************************************
 
@@ -55,15 +55,18 @@ var nbt = NBT.parse(data, function(err, nbt) {
   fs.writeFileSync('saves/' + worldName + '/level.dat', zlib.gzipSync(buffer));
 
   var world = new World('saves/' + worldName);
-  // TODO: world's level is read async!
 
-  var p = new Projection(world, x, y);
+  // TODO: world's level is read async(?)
 
-  //options.GEOMETRY = new Geometry({
-  //  dir: 'var/geometry',
-  //  url: 'http://data.osmbuildings.org/0.2/geocraft2016-02/area.json',
-  //  bbox: bbox
-  //});
+  new Rasterizer({
+    world: world,
+    x: x,
+    y: y,
+    sizeX: sizeY,
+    sizeY: sizeX,
+    dir: 'var/geometry',
+    url: 'http://data.osmbuildings.org/0.2/geocraft2016-02/area.json',
+    bbox: bbox
+  });
 
-  p.process(options);
 });

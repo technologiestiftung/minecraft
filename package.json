@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "long": "^3.0.1",
-    "mca.js": "git://github.com/VanCoding/mca.js.git"
+    "long": "^3.0.1"
   },
   "devDependencies": {},
   "scripts": {},
