@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "long": "^3.0.1"
+    "long": "^4.0.0"
   },
   "devDependencies": {},
   "scripts": {},
